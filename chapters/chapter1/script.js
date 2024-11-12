@@ -77,6 +77,19 @@ async function main() {
     const commandBuffer = encoder.finish();
     device.queue.submit([ commandBuffer ]);
   }
-  render();
+  // render();
+
+  const dpr = Math.min(window.devicePixelRatio, 2);
+  const observer = new ResizeObserver(entries => {
+    for(const entry of entries) {
+      const c = entry.target;
+      const w = entry.contentBoxSize[0].inlineSize*dpr;
+      const h = entry.contentBoxSize[0].blockSize*dpr;
+      c.width = Math.max(1, Math.min(w, device.limits.maxTextureDimension2D));
+      c.height = Math.max(1, Math.min(h, device.limits.maxTextureDimension2D));
+      render();
+    }
+  });
+  observer.observe(c);
 }
 main();
