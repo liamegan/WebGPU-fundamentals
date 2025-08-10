@@ -4,7 +4,6 @@ import shader from "./shader.wgsl";
 
 // import "@webgpu/types";
 
-
 async function main() {
   const c:HTMLCanvasElement = <HTMLCanvasElement>document.getElementById('canvas');
   const { width, height } = c;
