@@ -1,11 +1,14 @@
 import glsl from 'vite-plugin-glsl';
-import pug from 'vite-plugin-pug';
 import { defineConfig } from 'vite';
+import { buildProjectStructure } from './scripts/paths.js';
 
 export default defineConfig({
   plugins: [
     glsl(),
-    pug()
+    {
+      name: 'structure',
+      watchChange: async() => await buildProjectStructure()
+    }
   ],
   root: "./src"
 })

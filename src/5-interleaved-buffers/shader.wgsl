@@ -1,5 +1,5 @@
 struct v_out {
-  @builtin(position) clip_position: vec4<f32>,
+  @builtin(position) pos: vec4<f32>,
   @location(0) colour: vec3<f32>
 }
 
@@ -9,8 +9,8 @@ fn vs(
   @location(1) colour: vec3<f32>
 ) -> v_out {
   var out: v_out;
-  out.clip_position = vec4<f32>(inPos,1);
-  out.colour = vec3<f32>(colour);
+  out.pos = vec4<f32>(inPos,1);
+  out.colour = colour;
   return out;
 }
 

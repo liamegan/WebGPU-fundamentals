@@ -1,0 +1,140 @@
+{
+  "name": "src",
+  "type": "directory",
+  "children": [
+    {
+      "name": "1-triangle",
+      "type": "directory",
+      "children": [
+        {
+          "name": "index.html",
+          "type": "file"
+        },
+        {
+          "name": "index.js",
+          "type": "file"
+        },
+        {
+          "name": "shader.wgsl",
+          "type": "file"
+        }
+      ]
+    },
+    {
+      "name": "2-triangle-verts",
+      "type": "directory",
+      "children": [
+        {
+          "name": "index.html",
+          "type": "file"
+        },
+        {
+          "name": "index.js",
+          "type": "file"
+        },
+        {
+          "name": "main.ts",
+          "type": "file"
+        },
+        {
+          "name": "shader.wgsl",
+          "type": "file"
+        }
+      ]
+    },
+    {
+      "name": "3-triangle-colours",
+      "type": "directory",
+      "children": [
+        {
+          "name": "index.html",
+          "type": "file"
+        },
+        {
+          "name": "main.ts",
+          "type": "file"
+        },
+        {
+          "name": "shader.wgsl",
+          "type": "file"
+        }
+      ]
+    },
+    {
+      "name": "5-interleaved-buffers",
+      "type": "directory",
+      "children": [
+        {
+          "name": "index.html",
+          "type": "file"
+        },
+        {
+          "name": "main.ts",
+          "type": "file"
+        },
+        {
+          "name": "shader.wgsl",
+          "type": "file"
+        },
+        {
+          "name": "testin",
+          "type": "directory",
+          "children": [
+            {
+              "name": "index.htm",
+              "type": "file"
+            },
+            {
+              "name": "testing.ts",
+              "type": "file"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "6-uniforms",
+      "type": "directory",
+      "children": [
+        {
+          "name": "index.html",
+          "type": "file"
+        },
+        {
+          "name": "main.ts",
+          "type": "file"
+        },
+        {
+          "name": "main.ts~",
+          "type": "file"
+        },
+        {
+          "name": "shader.wgsl",
+          "type": "file"
+        }
+      ]
+    },
+    {
+      "name": "index.html",
+      "type": "file"
+    },
+    {
+      "name": "index.js",
+      "type": "file"
+    },
+    {
+      "name": "style.css",
+      "type": "file"
+    },
+    {
+      "name": "utils",
+      "type": "directory",
+      "children": [
+        {
+          "name": "createGPUBuffer.ts",
+          "type": "file"
+        }
+      ]
+    }
+  ]
+}
