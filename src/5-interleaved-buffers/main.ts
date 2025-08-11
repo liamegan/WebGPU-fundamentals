@@ -40,43 +40,30 @@ async function main() {
   }
   ctx.configure(canvasConfig);
 
-  const positions = new Float32Array([
-    .8,-.8,0,
-    -.8,-.8,0,
-    0,.8,0
+  const position_colours = new Float32Array([
+    .8,-.8,0,   1,.6,.6,
+    -.8,-.8,0,  .3,1,.7,
+    0,.8,0,     .4,.7,1
   ]);
   const positionAttributeDescriptor: GPUVertexAttribute = {
     format: "float32x3",
     offset: 0,
     shaderLocation: 0,
   }
-  const {
-    buffer: positionBuffer,
-    bufferLayoutDesc: positionBufferLayoutDesc
-  } = createGPUBuffer({
-    device,
-    values: positions,
-    attributes: [positionAttributeDescriptor]
-  });
-
-  const colours = new Float32Array([
-    1,.6,.6,
-    .3,1,.7,
-    .4,.7,1
-  ])
   const colourAttributeDescriptor: GPUVertexAttribute = {
     format: "float32x3",
-    offset: 0,
+    offset: 4 * 3, // sizeof(float) * 3
     shaderLocation: 1,
   }
   const {
-    buffer: colourBuffer,
-    bufferLayoutDesc: colourBufferLayoutDesc
+    buffer: mainBuffer,
+    bufferLayoutDesc: mainBufferLayoutDesc
   } = createGPUBuffer({
     device,
-    attributes: [colourAttributeDescriptor],
-    values: colours,
-  })
+    values: position_colours,
+    attributes: [positionAttributeDescriptor, colourAttributeDescriptor],
+    size: 6 // size of the two buffers added together
+  });
 
   const shaderDesc:GPUShaderModuleDescriptor = {
     code: shadercode
@@ -93,7 +80,7 @@ async function main() {
   const vertexState: GPUVertexState = {
     module: shader,
     entryPoint: "vs",
-    buffers: [positionBufferLayoutDesc, colourBufferLayoutDesc],
+    buffers: [mainBufferLayoutDesc],
   }
   const fragmentState: GPUFragmentState = {
     module: shader,
@@ -132,8 +119,7 @@ async function main() {
   const passEncoder = commandEncoder.beginRenderPass(renderPassDesc);
   passEncoder.setViewport(0,0,width,height,0,1);
   passEncoder.setPipeline(pipeline);
-  passEncoder.setVertexBuffer(0, positionBuffer)
-  passEncoder.setVertexBuffer(1, colourBuffer)
+  passEncoder.setVertexBuffer(0, mainBuffer)
   passEncoder.draw(3,1);
   passEncoder.end();
 
