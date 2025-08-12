@@ -35,18 +35,18 @@ async function main()  {
 
   // Geometry
   const vertData = new Float32Array([
-    // pos      // col
-    .8,-.8,0,   1,.6,.6,
-    -.8,-.8,0,  .3,1,.7,
-    0,.8,0,     .4,.7,1
+    // pos      // uv
+    .8,-.8,0,   1,0,
+    -.8,-.8,0,  0,0,
+    0,.8,0,     .5,1,
   ]);
   const posDesc: GPUVertexAttribute = {
     format: "float32x3",
     offset: 0,
     shaderLocation: 0,
   }
-  const colDesc: GPUVertexAttribute = {
-    format: "float32x3",
+  const uvDesc: GPUVertexAttribute = {
+    format: "float32x2",
     offset: 4*3,
     shaderLocation: 1,
   }
@@ -56,11 +56,61 @@ async function main()  {
   } = createGPUBuffer({
     device,
     values: vertData,
-    attributes: [posDesc, colDesc],
-    size: 6
+    attributes: [posDesc, uvDesc],
+    size: 5
   });
 
   // uniforms
+  const uniformBufferLayoutDescEntries = []
+  const uniformBindGroupDescEntries = [];
+  // Texture
+  const img = await fetch("./image.png");
+  const blob = await img.blob();
+  const bmp = await createImageBitmap(blob);
+  const textureDesc:GPUTextureDescriptor = {
+    size: { width: bmp.width, height:bmp.height },
+    format: "rgba8unorm",
+    // COPY_DST and RENDER_ATTACHMENT are necessary when using the copyExternalImageToTexture function
+    usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST | GPUTextureUsage.RENDER_ATTACHMENT,
+  }
+  const texture = device.createTexture(textureDesc);
+  const sourceInfo:  GPUCopyExternalImageSourceInfo = {
+    source: bmp,
+    flipY: true
+  }
+  const destInfo: GPUCopyExternalImageDestInfo = {
+    texture
+  }
+  device.queue.copyExternalImageToTexture(sourceInfo, destInfo, textureDesc.size);
+  const samplerInfo: GPUSamplerDescriptor = {
+    addressModeU: 'repeat',
+    addressModeV: 'repeat',
+    magFilter: 'linear',
+    minFilter: 'linear',
+    mipmapFilter: 'linear',
+  }
+  const sampler = device.createSampler(samplerInfo)
+  const textureBindGroupEntry: GPUBindGroupEntry = {
+    binding: 1,
+    resource: texture.createView()
+  }
+  const samplerBindGroupEntry: GPUBindGroupEntry = {
+    binding: 2,
+    resource: sampler
+  }
+  const textureBindGroupLayoutEntry = {
+    binding: 1,
+    visibility: GPUShaderStage.FRAGMENT,
+    texture: {}
+  }
+  const samplerBindGroupLayoutEntry = {
+    binding: 2,
+    visibility: GPUShaderStage.FRAGMENT,
+    sampler: {}
+  }
+  uniformBindGroupDescEntries.push(textureBindGroupEntry, samplerBindGroupEntry)
+  uniformBufferLayoutDescEntries.push(textureBindGroupLayoutEntry, samplerBindGroupLayoutEntry)
+  // Offset uniform
   const uniformData = new Float32Array([
     .1,.1,.1
   ])
@@ -69,25 +119,27 @@ async function main()  {
     values: uniformData,
     usage: GPUBufferUsage.UNIFORM
   })
-  const uniformBufferLayoutDesc: GPUBindGroupLayoutDescriptor = {
-    entries: [
-      {
-        binding: 0,
-        visibility: GPUShaderStage.VERTEX,
-        buffer: {}
-      }
-    ]
-  }
-  const uniformBindGroupLayout = device.createBindGroupLayout(uniformBufferLayoutDesc)
-  const uniformBindGroupEntry: GPUBindGroupEntry = {
+  const offsetBindGroupEntry: GPUBindGroupEntry = {
     binding: 0,
     resource: {
       buffer: uniformBuffer
     }
   }
+  const offsetBindGroupLayoutEntry: GPUBindGroupLayoutEntry = {
+    binding: 0,
+    visibility: GPUShaderStage.VERTEX,
+    buffer: {}
+  }
+  uniformBindGroupDescEntries.push(offsetBindGroupEntry)
+  uniformBufferLayoutDescEntries.push(offsetBindGroupLayoutEntry)
+  // pulling them together
+  const uniformBufferLayoutDesc: GPUBindGroupLayoutDescriptor = {
+    entries: uniformBufferLayoutDescEntries
+  }
+  const uniformBindGroupLayout = device.createBindGroupLayout(uniformBufferLayoutDesc)
   const uniformBindGroupDesc: GPUBindGroupDescriptor = {
     layout: uniformBindGroupLayout,
-    entries: [uniformBindGroupEntry]
+    entries: uniformBindGroupDescEntries
   }
   const uniformBindGroup = device.createBindGroup(uniformBindGroupDesc)
 

@@ -105,7 +105,25 @@
           "type": "file"
         },
         {
-          "name": "main.ts~",
+          "name": "shader.wgsl",
+          "type": "file"
+        }
+      ]
+    },
+    {
+      "name": "7-textures",
+      "type": "directory",
+      "children": [
+        {
+          "name": "image.png",
+          "type": "file"
+        },
+        {
+          "name": "index.html",
+          "type": "file"
+        },
+        {
+          "name": "main.ts",
           "type": "file"
         },
         {
