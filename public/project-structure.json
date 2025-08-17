@@ -133,6 +133,54 @@
       ]
     },
     {
+      "name": "8-transformation-matrices",
+      "type": "directory",
+      "children": [
+        {
+          "name": "image.png",
+          "type": "file"
+        },
+        {
+          "name": "index.html",
+          "type": "file"
+        },
+        {
+          "name": "main.ts",
+          "type": "file"
+        },
+        {
+          "name": "shader.wgsl",
+          "type": "file"
+        }
+      ]
+    },
+    {
+      "name": "9-cameras",
+      "type": "directory",
+      "children": [
+        {
+          "name": "image.png",
+          "type": "file"
+        },
+        {
+          "name": "index.html",
+          "type": "file"
+        },
+        {
+          "name": "main.ts",
+          "type": "file"
+        },
+        {
+          "name": "main.ts~",
+          "type": "file"
+        },
+        {
+          "name": "shader.wgsl",
+          "type": "file"
+        }
+      ]
+    },
+    {
       "name": "index.html",
       "type": "file"
     },

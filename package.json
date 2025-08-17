@@ -16,5 +16,8 @@
     "vite-plugin-glsl": "^1.5.1",
     "vite-plugin-pug": "^0.4.1",
     "watch": "^1.0.2"
+  },
+  "dependencies": {
+    "wtc-math": "^1.0.20"
   }
 }

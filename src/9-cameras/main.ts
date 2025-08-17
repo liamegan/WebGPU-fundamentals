@@ -65,64 +65,21 @@ async function main()  {
   // uniforms
   const uniformBufferLayoutDescEntries = []
   const uniformBindGroupDescEntries = [];
-  // Texture
-  const img = await fetch("./image.png");
-  const blob = await img.blob();
-  const bmp = await createImageBitmap(blob);
-  const textureDesc:GPUTextureDescriptor = {
-    size: { width: bmp.width, height:bmp.height },
-    format: "rgba8unorm",
-    // COPY_DST and RENDER_ATTACHMENT are necessary when using the copyExternalImageToTexture function
-    usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST | GPUTextureUsage.RENDER_ATTACHMENT,
-  }
-  const texture = device.createTexture(textureDesc);
-  const sourceInfo:  GPUCopyExternalImageSourceInfo = {
-    source: bmp,
-    flipY: true
-  }
-  const destInfo: GPUCopyExternalImageDestInfo = {
-    texture
-  }
-  device.queue.copyExternalImageToTexture(sourceInfo, destInfo, textureDesc.size);
-  const samplerInfo: GPUSamplerDescriptor = {
-    addressModeU: 'repeat',
-    addressModeV: 'repeat',
-    magFilter: 'linear',
-    minFilter: 'linear',
-    mipmapFilter: 'linear',
-  }
-  const sampler = device.createSampler(samplerInfo)
-  const textureBindGroupEntry: GPUBindGroupEntry = {
-    binding: 1,
-    resource: texture.createView()
-  }
-  const samplerBindGroupEntry: GPUBindGroupEntry = {
-    binding: 2,
-    resource: sampler
-  }
-  const textureBindGroupLayoutEntry = {
-    binding: 1,
-    visibility: GPUShaderStage.FRAGMENT,
-    texture: {}
-  }
-  const samplerBindGroupLayoutEntry = {
-    binding: 2,
-    visibility: GPUShaderStage.FRAGMENT,
-    sampler: {}
-  }
-  uniformBindGroupDescEntries.push(textureBindGroupEntry, samplerBindGroupEntry)
-  uniformBufferLayoutDescEntries.push(textureBindGroupLayoutEntry, samplerBindGroupLayoutEntry)
   // Transformation uniform
-  const mat = Mat4.fromTranslatingVec3(new Vec3(-.5,-.5,0));
-  const { buffer: uniformBuffer } = createGPUBuffer({
+  const transform = Mat4.lookAt(
+    new Vec3(5,5,5),
+    new Vec3(0,0,0),
+    new Vec3(0,1,0)
+  );
+  const { buffer: transformBuffer } = createGPUBuffer({
     device,
-    values: Float32Array.from(mat.array),
+    values: Float32Array.from(transform.array),
     usage: GPUBufferUsage.UNIFORM
   })
   const transformBindGroupEntry: GPUBindGroupEntry = {
     binding: 0,
     resource: {
-      buffer: uniformBuffer
+      buffer: transformBuffer
     }
   }
   const transformBindGroupLayoutEntry: GPUBindGroupLayoutEntry = {
@@ -130,8 +87,27 @@ async function main()  {
     visibility: GPUShaderStage.VERTEX,
     buffer: {}
   }
-  uniformBindGroupDescEntries.push(transformBindGroupEntry)
-  uniformBufferLayoutDescEntries.push(transformBindGroupLayoutEntry)
+  const projection = Mat4.perspective(
+    1.4, window.innerWidth / window.innerHeight, .1, 1000
+  )
+  const { buffer: projectionBuffer } = createGPUBuffer({
+    device,
+    values: Float32Array.from(projection.array),
+    usage: GPUBufferUsage.UNIFORM
+  })
+  const projectionBindGroupEntry: GPUBindGroupEntry = {
+    binding: 1,
+    resource: {
+      buffer: projectionBuffer
+    }
+  }
+  const projectionBindGroupLayoutEntry: GPUBindGroupLayoutEntry = {
+    binding: 1,
+    visibility: GPUShaderStage.VERTEX,
+    buffer: {}
+  }
+  uniformBindGroupDescEntries.push(transformBindGroupEntry, projectionBindGroupEntry)
+  uniformBufferLayoutDescEntries.push(transformBindGroupLayoutEntry, projectionBindGroupLayoutEntry)
   // pulling them together
   const uniformBufferLayoutDesc: GPUBindGroupLayoutDescriptor = {
     entries: uniformBufferLayoutDescEntries
