@@ -195,6 +195,14 @@
         {
           "name": "createGPUBuffer.ts",
           "type": "file"
+        },
+        {
+          "name": "createUniform.ts",
+          "type": "file"
+        },
+        {
+          "name": "createUniform.ts~",
+          "type": "file"
         }
       ]
     }

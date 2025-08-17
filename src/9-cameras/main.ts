@@ -2,6 +2,7 @@
 import { Vec3, Mat4 } from "wtc-math";
 
 import { createGPUBuffer } from "../utils/createGPUBuffer"
+import { createUniform } from "../utils/createUniform"
 
 // @ts-ignore
 import code from "./shader.wgsl";
@@ -65,49 +66,36 @@ async function main()  {
   // uniforms
   const uniformBufferLayoutDescEntries = []
   const uniformBindGroupDescEntries = [];
-  // Transformation uniform
+  // Transform uniform
   const transform = Mat4.lookAt(
     new Vec3(5,5,5),
     new Vec3(0,0,0),
     new Vec3(0,1,0)
   );
-  const { buffer: transformBuffer } = createGPUBuffer({
-    device,
-    values: Float32Array.from(transform.array),
-    usage: GPUBufferUsage.UNIFORM
-  })
-  const transformBindGroupEntry: GPUBindGroupEntry = {
-    binding: 0,
-    resource: {
-      buffer: transformBuffer
-    }
+  {
+    const { bindGroupEntry, bindGroupLayoutEntry } = createUniform({
+      device,
+      values: Float32Array.from(transform.array),
+      binding: 0,
+      visibility: GPUShaderStage.VERTEX,
+    })
+    uniformBindGroupDescEntries.push(bindGroupEntry)
+    uniformBufferLayoutDescEntries.push(bindGroupLayoutEntry)
   }
-  const transformBindGroupLayoutEntry: GPUBindGroupLayoutEntry = {
-    binding: 0,
-    visibility: GPUShaderStage.VERTEX,
-    buffer: {}
-  }
+  // Projection uniform
   const projection = Mat4.perspective(
-    1.4, window.innerWidth / window.innerHeight, .1, 1000
-  )
-  const { buffer: projectionBuffer } = createGPUBuffer({
-    device,
-    values: Float32Array.from(projection.array),
-    usage: GPUBufferUsage.UNIFORM
-  })
-  const projectionBindGroupEntry: GPUBindGroupEntry = {
-    binding: 1,
-    resource: {
-      buffer: projectionBuffer
-    }
+    1.4, window.innerWidth / window.innerHeight, .1, 1000)
+  {
+    const { bindGroupEntry, bindGroupLayoutEntry } = createUniform({
+      device,
+      values: Float32Array.from(projection.array),
+      binding: 1,
+      visibility: GPUShaderStage.VERTEX,
+    })
+    uniformBindGroupDescEntries.push(bindGroupEntry)
+    uniformBufferLayoutDescEntries.push(bindGroupLayoutEntry)
   }
-  const projectionBindGroupLayoutEntry: GPUBindGroupLayoutEntry = {
-    binding: 1,
-    visibility: GPUShaderStage.VERTEX,
-    buffer: {}
-  }
-  uniformBindGroupDescEntries.push(transformBindGroupEntry, projectionBindGroupEntry)
-  uniformBufferLayoutDescEntries.push(transformBindGroupLayoutEntry, projectionBindGroupLayoutEntry)
+  console.log(uniformBufferLayoutDescEntries)
   // pulling them together
   const uniformBufferLayoutDesc: GPUBindGroupLayoutDescriptor = {
     entries: uniformBufferLayoutDescEntries
