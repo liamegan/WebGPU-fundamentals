@@ -1,4 +1,4 @@
-// https://shi-yan.github.io/webgpuunleashed/Basics/utilizing_transformation_matrices.html
+// https://shi-yan.github.io/webgpuunleashed/Basics/implementing_cameras.html#
 import { Vec3, Mat4 } from "wtc-math";
 
 import { createGPUBuffer } from "../utils/createGPUBuffer"
