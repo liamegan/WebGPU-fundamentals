@@ -100,12 +100,12 @@ async function main()  {
     binding: 2,
     resource: sampler
   }
-  const textureBindGroupLayoutEntry = {
+  const textureBindGroupLayoutEntry: GPUBindGroupLayoutEntry = {
     binding: 1,
     visibility: GPUShaderStage.FRAGMENT,
     texture: {}
   }
-  const samplerBindGroupLayoutEntry = {
+  const samplerBindGroupLayoutEntry: GPUBindGroupLayoutEntry = {
     binding: 2,
     visibility: GPUShaderStage.FRAGMENT,
     sampler: {}

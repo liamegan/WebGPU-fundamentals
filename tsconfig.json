@@ -3,5 +3,8 @@
     "target": "ES5",
     "lib": ["ES5", "DOM", "ES2015"],
     "types": ["@webgpu/types"],
+    "paths": {
+      "@/publlic/": ["public/*"]
+    }
   },
 }

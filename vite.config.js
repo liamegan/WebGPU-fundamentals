@@ -1,6 +1,7 @@
 import glsl from 'vite-plugin-glsl';
 import { defineConfig } from 'vite';
 import { buildProjectStructure } from './scripts/paths.js';
+import path from "path"
 
 export default defineConfig({
   plugins: [
@@ -10,5 +11,10 @@ export default defineConfig({
       watchChange: async() => await buildProjectStructure()
     }
   ],
-  root: "./src"
+  root: "./src",
+  resolve: {
+    alias: {
+      "@/public": path.resolve(__dirname, "public"),
+    }
+  }
 })

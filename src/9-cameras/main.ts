@@ -4,6 +4,9 @@ import { Vec3, Mat4 } from "wtc-math";
 import { createGPUBuffer } from "../utils/createGPUBuffer"
 import { createUniform } from "../utils/createUniform"
 
+import imageTex from "@/public/image.png";
+console.log(imageTex)
+
 // @ts-ignore
 import code from "./shader.wgsl";
 
@@ -68,7 +71,7 @@ async function main()  {
   const uniformBindGroupDescEntries = [];
   // Transform uniform
   const transform = Mat4.lookAt(
-    new Vec3(5,5,5),
+    new Vec3(2,0,2),
     new Vec3(0,0,0),
     new Vec3(0,1,0)
   );
@@ -96,6 +99,55 @@ async function main()  {
     uniformBufferLayoutDescEntries.push(bindGroupLayoutEntry)
   }
   console.log(uniformBufferLayoutDescEntries)
+
+  // Texture
+  const img = await fetch(imageTex);
+  const blob = await img.blob();
+  const bmp = await createImageBitmap(blob);
+  const textureDesc:GPUTextureDescriptor = {
+    size: { width: bmp.width, height:bmp.height },
+    format: "rgba8unorm",
+    // COPY_DST and RENDER_ATTACHMENT are necessary when using the copyExternalImageToTexture function
+    usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST | GPUTextureUsage.RENDER_ATTACHMENT,
+  }
+  const texture = device.createTexture(textureDesc);
+  const sourceInfo:  GPUCopyExternalImageSourceInfo = {
+    source: bmp,
+    flipY: true
+  }
+  const destInfo: GPUCopyExternalImageDestInfo = {
+    texture
+  }
+  device.queue.copyExternalImageToTexture(sourceInfo, destInfo, textureDesc.size);
+  const samplerInfo: GPUSamplerDescriptor = {
+    addressModeU: 'repeat',
+    addressModeV: 'repeat',
+    magFilter: 'linear',
+    minFilter: 'linear',
+    mipmapFilter: 'linear',
+  }
+  const sampler = device.createSampler(samplerInfo)
+
+  {
+    const { bindGroupEntry, bindGroupLayoutEntry } = createUniform({
+      device,
+      resource: texture.createView(),
+      binding: 2,
+      visibility: GPUShaderStage.FRAGMENT,
+    })
+    uniformBindGroupDescEntries.push(bindGroupEntry)
+    uniformBufferLayoutDescEntries.push(bindGroupLayoutEntry)
+  }
+  {
+    const { bindGroupEntry, bindGroupLayoutEntry } = createUniform({
+      device,
+      resource: sampler,
+      binding: 3,
+      visibility: GPUShaderStage.FRAGMENT,
+    })
+    uniformBindGroupDescEntries.push(bindGroupEntry)
+    uniformBufferLayoutDescEntries.push(bindGroupLayoutEntry)
+  }
   // pulling them together
   const uniformBufferLayoutDesc: GPUBindGroupLayoutDescriptor = {
     entries: uniformBufferLayoutDescEntries
