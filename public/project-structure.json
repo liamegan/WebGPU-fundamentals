@@ -21,6 +21,28 @@
       ]
     },
     {
+      "name": "10-triangle-strips",
+      "type": "directory",
+      "children": [
+        {
+          "name": "index.html",
+          "type": "file"
+        },
+        {
+          "name": "main.ts",
+          "type": "file"
+        },
+        {
+          "name": "main.ts~",
+          "type": "file"
+        },
+        {
+          "name": "shader.wgsl",
+          "type": "file"
+        }
+      ]
+    },
+    {
       "name": "2-triangle-verts",
       "type": "directory",
       "children": [
