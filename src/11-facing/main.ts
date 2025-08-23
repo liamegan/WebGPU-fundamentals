@@ -1,4 +1,4 @@
-// https://shi-yan.github.io/webgpuunleashed/Basics/triangle_strips.html
+// https://shi-yan.github.io/webgpuunleashed/Basics/front_and_back_face_culling.html
 import { Vec3, Mat4 } from "wtc-math";
 
 import { createGPUBuffer } from "../utils/createGPUBuffer"
@@ -42,20 +42,32 @@ async function main()  {
   // Geometry
   // Triangle strip - vertices need to be ordered in a zig-zag
   /*
-  v3 ----- v1
-  |       / |
-  |      /  |
-  |     /   |
-  |    /    |
-  |   /     |
-  v2 ----- v0
+  v1 ---- v3
+  | \      |
+  |  \     |
+  |   \    |
+  |    \   |
+  |     \  |
+  v0 ---- v2
   */
   const vertData = new Float32Array([
-    // pos              // uv
-     .8, -.8,   0,      1,0,        // v0 - Bottom-right
-     .8,  .8,   0,      1,1,        // v1 - Top-right
-    -.8, -.8,   0,      0,0,        // v2 - Bottom-left
-    -.8,  .8,   0,      0,1,        // v3 - Top-left
+    // Top face
+    -.8,  .8, 0,    0.0, 0.0,   // v0
+    -.8,  .8, 1.6,  0.0, 1.0,   // v1
+    .8,  .8, 0,    0.25, 0.0,  // v2
+    .8,  .8, 1.6,  0.25, 1.0,  // v3
+
+    // Right face
+    .8, -.8, 0,    0.5, 0.0,   // v4
+    .8, -.8, 1.6,  0.5, 1.0,   // v5
+
+    // Bottom face
+    -.8, -.8, 0,    0.75, 0.0,  // v6
+    -.8, -.8, 1.6,  0.75, 1.0,  // v7
+
+    // Left face (connects back to the beginning)
+    -.8,  .8, 0,    1.0, 0.0,   // v8
+    -.8,  .8, 1.6,  1.0, 1.0    // v9
   ]);
   const posDesc: GPUVertexAttribute = {
     format: "float32x3",
@@ -82,7 +94,7 @@ async function main()  {
   const uniformBindGroupDescEntries = [];
   // Transform uniform
   const transform = Mat4.lookAt(
-    new Vec3(2,0,2),
+    new Vec3(2,2,2),
     new Vec3(0,0,0),
     new Vec3(0,1,0)
   );
@@ -195,7 +207,7 @@ async function main()  {
   const primitiveState: GPUPrimitiveState = {
     topology: "triangle-strip",
     frontFace: "ccw",
-    cullMode: "back"
+    cullMode: "none"
   }
   const pipelineDesc:GPURenderPipelineDescriptor = {
     layout,
@@ -227,7 +239,7 @@ async function main()  {
   passEncoder.setVertexBuffer(0, vertexBuffer)
   passEncoder.setBindGroup(0, uniformBindGroup)
   passEncoder.setPipeline(pipeline);
-  passEncoder.draw(4,1);
+  passEncoder.draw(10,1);
   passEncoder.end();
 
   device.queue.submit([commandEncoder.finish()])

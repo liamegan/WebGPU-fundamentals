@@ -33,11 +33,29 @@
           "type": "file"
         },
         {
-          "name": "main.ts~",
+          "name": "shader.wgsl",
+          "type": "file"
+        }
+      ]
+    },
+    {
+      "name": "11-facing",
+      "type": "directory",
+      "children": [
+        {
+          "name": "index.html",
+          "type": "file"
+        },
+        {
+          "name": "main.ts",
           "type": "file"
         },
         {
           "name": "shader.wgsl",
+          "type": "file"
+        },
+        {
+          "name": "shader.wgsl~",
           "type": "file"
         }
       ]
