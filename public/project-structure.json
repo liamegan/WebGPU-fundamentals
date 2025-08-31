@@ -53,9 +53,27 @@
         {
           "name": "shader.wgsl",
           "type": "file"
+        }
+      ]
+    },
+    {
+      "name": "12-depth-testing",
+      "type": "directory",
+      "children": [
+        {
+          "name": "index.html",
+          "type": "file"
         },
         {
-          "name": "shader.wgsl~",
+          "name": "main.ts",
+          "type": "file"
+        },
+        {
+          "name": "main.ts~",
+          "type": "file"
+        },
+        {
+          "name": "shader.wgsl",
           "type": "file"
         }
       ]
