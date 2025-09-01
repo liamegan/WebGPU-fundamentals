@@ -1,6 +1,6 @@
 export type createGPUBufferProps = {
   device: GPUDevice
-  values: Float32Array
+  values: Float32Array | Uint16Array
   attributes?: GPUVertexAttribute[] // Array of attributes
   size?: number
   stepMode?: GPUVertexBufferLayout["stepMode"]
@@ -29,7 +29,11 @@ export function createGPUBuffer(
     mappedAtCreation: true,
   }
   const buffer = device.createBuffer(bufferDesc);
-  new Float32Array(buffer.getMappedRange()).set(values);
+  if (values instanceof Float32Array) new Float32Array(buffer.getMappedRange()).set(values);
+  else if (values instanceof Uint16Array) new Uint16Array(buffer.getMappedRange()).set(values);
+  else if (values instanceof Uint8Array) new Uint8Array(buffer.getMappedRange()).set(values);
+  else if (values instanceof Uint32Array) new Uint32Array(buffer.getMappedRange()).set(values);
+  else new Uint32Array(buffer.getMappedRange()).set(values);
   buffer.unmap();
 
   return { buffer, bufferLayoutDesc }

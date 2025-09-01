@@ -69,6 +69,24 @@
           "type": "file"
         },
         {
+          "name": "shader.wgsl",
+          "type": "file"
+        }
+      ]
+    },
+    {
+      "name": "13-index-buffers",
+      "type": "directory",
+      "children": [
+        {
+          "name": "index.html",
+          "type": "file"
+        },
+        {
+          "name": "main.ts",
+          "type": "file"
+        },
+        {
           "name": "main.ts~",
           "type": "file"
         },
